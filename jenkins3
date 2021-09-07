@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM') {
+            steps {
+                git branch: 'war', url: 'https://github.com/godlinmilan5/jenkins.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                bat 'mvn clean'
+				bat 'mvn install'
+            }
+		}
+        stage('Deploy') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'web', path: '', url: 'http://localhost:8080')], contextPath: 'newdep', war: '**/*.war'
+            }
+		}
+    }		
+}
